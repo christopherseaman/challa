@@ -78,7 +78,7 @@
 
 **Interpretation:** The study can reliably detect moderate-to-large effects but has limited power for small effects. This is appropriate for a K01 career development award focusing on meaningful public health disparities.
 
-### 5. Target Effect Size Analysis (OR = 1.15)
+### 5. Smallest Meaningful Effect Size Analysis (OR = 1.15)
 
 **Question:** What is the power for detecting the minimum meaningful effect of OR = 1.15?
 
@@ -216,7 +216,7 @@ These results closely match our Python-based calculations, confirming their vali
 
 ## Technical Appendix
 
-### Target OR=1.15 Analysis Output
+### Smallest Meaningful OR=1.15 Analysis Output
 
 ```
 Target OR: 1.15
