@@ -4,7 +4,7 @@
 
 ### Aim 1
 
-- **Expected Effect (OR=1.74):** 83.8% power to detect a difference in IPV rates (10% vs 6%, OR=1.74) at α=0.1.
+- **Expected Effect (OR=1.74):** 83.8% power to detect a difference in IPV rates (10% vs 6%) at α=0.1.
 - **Minimum Detectable Effect at 80% power:** The study can detect an odds ratio of 1.69 or greater at α=0.1.
 - **Power for Smallest Meaningful Effect (OR=1.15):** Only 16.2% power to detect a minimal effect (OR=1.15), indicating the study is underpowered for very small differences.
 
