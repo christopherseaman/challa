@@ -9,7 +9,7 @@ This report provides comprehensive power calculations for two quantitative aims 
 - **Aim 1 - Observed Effect:** 83.8% power to detect OR=1.74 (10% vs 6% IPV rates) at α=0.1
 - **Aim 1 - Minimum Detectable Effect:** OR=1.69 achieves 80% power at α=0.1 (answers key consultation question)
 - **Aim 1 - Target Effect:** Only 16.2% power for OR=1.15 (minimal meaningful effect)
-- **Aim 3 (Dyadic Analysis):** Excellent power (99.8% actor, 94.5% partner effects) for moderate effect sizes
+- **Aim 3 (Dyadic Analysis):** Excellent power (94.5% actor, 99.8% partner effects) for moderate effect sizes
 - **Multiple Comparisons:** FDR maintains full power (83.8%) vs 69.0% for Bonferroni (proper FDR implementation)
 
 ![Power Analysis Results](k01_comprehensive_power_analysis.png)
@@ -101,8 +101,8 @@ This report provides comprehensive power calculations for two quantitative aims 
 
 **Study Power:**
 
-- **Actor effects (OR=1.6):** 99.8% power
-- **Partner effects (OR=1.4):** 94.5% power
+- **Actor effects (OR=1.4):** 94.5% power
+- **Partner effects (OR=1.6):** 99.8% power
 
 ---
 
@@ -137,15 +137,15 @@ IPV (Primary Outcome):
 Number of couples: 200
 Baseline IPV rate: 20.0%
 ICC between partners: 0.3
-Actor effect OR: 1.6
-Partner effect OR: 1.4
+Actor effect OR: 1.4
+Partner effect OR: 1.6
 Alpha level: 0.1
 
 Power Analysis Results:
   Design effect (clustering): 1.30
   Effective sample size: 308
-  Actor effect power: 0.998
-  Partner effect power: 0.945
+  Actor effect power: 0.945
+  Partner effect power: 0.998
 ```
 
 **Key Insight:** The study is well-powered for both actor and partner effects, supporting a comprehensive test of the APIM framework rather than treating partner effects as merely exploratory.

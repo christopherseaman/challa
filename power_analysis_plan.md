@@ -1,106 +1,88 @@
-# K01 Resubmission: Power Analysis Implementation Plan
+# Power Analysis Implementation Plan
 
-## Overview
-This document outlines the implementation plan for rigorous power calculations supporting two specific aims in South Asian sexual and reproductive health research.
+This document outlines the implementation plan for rigorous power calculations supporting two specific aims for the K01 resubmission on South Asian sexual and reproductive health.
 
-## Current Status
-- Project context: K01 resubmission with reviewer concerns about statistical rigor
-- Previous errors identified: Wrong population assumptions, ignored survey design, treated dyadic data as independent
-- Goal: Grant-ready power calculations with proper methodology
+## Parameter Definitions
 
-## Implementation Questions to Address
+**Aim 1: CHIS Decomposition Analysis**
+- Sample size: n = 237 South Asians
+- Design effect: DEFF = 1.5 (effective n ≈ 158)
+- Alpha: α = 0.1
+- Baseline outcome rates: IPV = 6% (power-limiting); contraceptive use and counseling treated as secondary.
+- Target OR for MDE: OR = 1.15 for power curves; actual effect size of interest calibrated.
 
-### Methodological Clarifications Needed:
+**Aim 3: Dyadic APIM Analysis**
+- Number of couples: n = 200
+- ICC between partners: ICC = 0.3
+- Baseline IPV rate: 20%
+- Target ORs: Actor = 1.4; Partner = 1.6
+- Alpha: α = 0.1
 
-#### Aim 1 (CHIS Decomposition Analysis):
-1. **Baseline rates for additional outcomes**: 
-   - IPV: 6% (specified)
-   - Contraceptive use: What baseline rate to assume? (typical range 60-80% for this age group)
-   - Contraceptive counseling: What baseline rate to assume? (typical range 40-70%)
+## Phase 1: Setup & Environment
 
-2. **Effect size interpretation**:
-   - OR = 1.15 specified as "minimum detectable effect" - is this the target effect we want 80% power to detect?
-   - Or should we calculate what OR we CAN detect with 80% power given the sample size?
+1. Install required Python packages:
+   ```bash
+   pip install numpy pandas scipy statsmodels matplotlib seaborn
+   ```
+2. Create `config.py` (or parameter dictionary) containing study parameters.
 
-3. **Multiple comparisons strategy**:
-   - FDR correction specified - should we show power both with/without correction?
-   - Are all 3 outcomes primary, or is IPV the main outcome with others secondary?
+## Phase 2: Aim 1 Power Functions
 
-#### Aim 3 (Dyadic APIM Analysis):
-1. **Effect size specification**:
-   - "Moderate actor effects" and "majority partner effects" - need specific OR values
-   - Suggested: Actor OR = 1.5, Partner OR = 2.0 based on IPV literature?
+- Implement two-sample proportion power with design effect:
+  - Function: `two_sample_proportion_power(n1, n2, p1, p2, alpha, design_effect)`
+- Implement `min_detectable_OR(n1, n2, p2, power, alpha, design_effect)`.
+- Incorporate multiple comparisons:
+  - FDR (Benjamini-Hochberg) and Bonferroni adjustments.
 
-2. **Analysis approach**:
-   - Separate power calculations for actor vs partner effects?
-   - Combined model power or individual effect power?
+## Phase 3: Aim 3 Dyadic Power Functions
 
-3. **Continuous exposure handling**:
-   - Gender norms scale (1-5) - should we assume 1 SD change effect?
-   - Or convert to dichotomous exposure for simpler interpretation?
+- Implement APIM power using variance inflation:
+  - Function: `dyadic_power_apim(n_couples, p_baseline, actor_OR, partner_OR, icc, alpha)`
+- Separate calculations for actor and partner effects.
 
-## Implementation Plan
+## Phase 4: Analysis Outputs
 
-### Phase 1: Setup and Parameter Definition
-- [ ] Define all baseline rates and effect sizes
-- [ ] Set up Python environment with required packages
-- [ ] Create parameter dictionaries for both aims
+- Generate result tables:
+  - Power vs OR for Aim 1 and Aim 3.
+  - Power vs sample size sensitivity.
+  - Minimum detectable OR at 80% power.
+- Visualize:
+  ```mermaid
+  flowchart TD
+    A[Phase 1: Setup & Parameter Definition] --> B[Aim 1 parameters]
+    B --> B1[n_SA = 237; DEFF = 1.5; α = 0.1; p_others = 0.06; p_SA = 0.10]
+    A --> C[Aim 3 parameters]
+    C --> C1[n_couples = 200; ICC = 0.3; baseline IPV = 20%]
+    C --> C2[Actor OR=1.4; Partner OR=1.6; α = 0.1]
+    A --> D[Aim 1 Power Functions]
+    D --> D1[two_sample_proportion_power]
+    D --> D2[min_detectable_OR]
+    A --> E[Aim 3 Dyadic Functions]
+    E --> E1[dyadic_power_apim]
+    A --> F[Analysis Outputs]
+  ```
 
-### Phase 2: Aim 1 Power Functions
-- [ ] Implement survey-weighted logistic regression power calculation
-- [ ] Account for design effect (effective n = 158)
-- [ ] Handle multiple comparisons (FDR correction)
-- [ ] Create sensitivity analysis functions
+## Phase 5: Validation & Documentation
 
-### Phase 3: Aim 3 Dyadic Power Functions  
-- [ ] Implement APIM power calculation accounting for:
-   - ICC between partners (0.3)
-   - Correlation between partner exposures (0.4)
-   - Distinguishable dyads structure
-- [ ] Separate functions for actor and partner effects
-- [ ] Account for reduced effective information due to clustering
-
-### Phase 4: Analysis Outputs
-- [ ] Power calculation result tables
-- [ ] Sensitivity analysis plots
-- [ ] Minimum detectable effect calculations
-- [ ] Clear assumption documentation
-
-### Phase 5: Validation and Documentation
-- [ ] Compare results to established formulas/software where possible
-- [ ] Create reproducible analysis scripts
-- [ ] Document all assumptions and limitations
-
-## Technical Approach
-
-### Python Packages:
-- `scipy.stats` - Statistical functions
-- `statsmodels` - Power calculations, survey analysis
-- `numpy/pandas` - Data manipulation
-- `matplotlib/seaborn` - Visualization
-- `sympy` (if needed) - Symbolic math for complex power formulas
-
-### Key Methodological Considerations:
-1. **Survey design effects**: Use effective sample size throughout
-2. **Dyadic interdependence**: Implement variance inflation for clustered data
-3. **Binary outcomes**: Use appropriate power formulas for logistic regression
-4. **Multiple comparisons**: Show both corrected and uncorrected power
-5. **Realistic effect sizes**: Base on published literature where possible
+- Cross-check critical functions against APIMPowerR or simulation.
+- Document assumptions and limitations.
+- Prepare reproducible scripts and README.
 
 ## Deliverables
-1. Well-documented Python scripts
-2. Power calculation summary tables
-3. Sensitivity analysis visualizations
-4. Minimum detectable effect summaries
-5. Clear limitations and assumptions documentation
 
-## Questions for Clarification
+1. Python scripts with functions for Aim 1 and Aim 3.
+2. Result tables and power curves saved as CSV and PNG.
+3. Markdown report summarizing methods, results, and assumptions.
 
-Before proceeding with implementation, please confirm:
+## Assumptions
 
-1. **Baseline rates for Aim 1 outcomes** (contraceptive use and counseling)
-2. **Target effect sizes for Aim 3** (actor and partner effects)
-3. **Primary vs secondary outcomes** (affects multiple comparisons strategy)
-4. **Preferred format for outputs** (tables, plots, etc.)
+- Survey design effect = 1.5.
+- ICC for dyadic clustering = 0.3.
+- Baseline IPV rates: 6% (CHIS) and 20% (dyadic).
+- Significance threshold α = 0.1.
 
-This plan ensures we address all methodological concerns while creating grant-ready power calculations.
+## Next Steps
+
+- Review code implementation in Code mode.
+- Validate with empirical or simulation checks.
+- Integrate outputs into grant application.

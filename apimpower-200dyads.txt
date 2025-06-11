@@ -1,0 +1,32 @@
+# APIM Power for 200 Dyads
+
+Effect	Power	N	df	d	Beta	r	partial r	ncp
+Actor Effect for Person 1	.186	.346	200	197	0.186	.092	.130	.089	1.248
+Actor Effect for Person 2	.186	.346	200	197	0.186	.092	.130	.089	1.248
+Partner Effect for Person 1	.260	.538	200	197	0.260	.128	.156	.123	1.745
+Partner Effect for Person 2	.260	.538	200	197	0.260	.128	.156	.123	1.745
+Difference in Actor Effects	.000	.100							0.000
+Difference in Partner Effects	.000	.100							0.000
+Average of Actor Effects	.186	.519							1.691
+Average of Partner Effects	.260	.764							2.364
+The task is to determine the levels of power available to detect the actor and partner effects for an Actor-Partner Interdependence Model analysis with distinguishable dyads given a particular sample size and alpha.
+
+Alpha is set to .100. N refers to the number of dyads. There are 200 dyads (and 0 Person 1 singles and 0 Person 2 singles).
+
+The measure of effect size is Cohen's d. The X variable is assumed to be a dichotomy. The proportion of Person 1 subjects in Category 1 of the X variable is 0.5, and the proportion of Person 2 subjects in Category 1 of the X variable is 0.5. The correlation between the two members' scores on X is .300, and the correlation of the errors is .300. The term "ncp" is the non-centrality parameter or the regression coefficient divided by its standard error.
+
+There is .346 power to detect an actor effect for Person 1 of size .186 (i.e., a beta of .092 or a partial r of .089).
+
+There is .346 power to detect an actor effect for Person 2 of size .186 (i.e., a beta of .092 or a partial r of .089).
+
+There is .538 power to detect a partner effect for Person 1 of size .260 (i.e., a beta of .128 or a partial r of .123).
+
+There is .538 power to detect a partner effect for Person 2 of size .260 (i.e., a beta of .128 or a partial r of .123).
+
+There is .100 power to detect a difference between the Person 1 and Person 2 actor effects of size .000.
+
+There is .100 power to detect a difference between the Person 1 and Person 2 partner effects of size .000.
+
+There is .519 power to detect average of the Person 1 and Person 2 actor effects of size .186.
+
+There is .764 power to detect average of the Person 1 and Person 2 partner effects of size .260.

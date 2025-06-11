@@ -22,6 +22,8 @@ from scipy.optimize import fsolve
 import warnings
 warnings.filterwarnings('ignore')
 
+import config
+
 # Set plotting style
 plt.style.use('default')
 sns.set_palette("husl")
@@ -34,27 +36,11 @@ class K01PowerAnalysis:
         
         # Aim 1: CHIS Analysis - IPV only (power-limiting outcome)
         # Parameters from consultation notes lines 99-124
-        self.aim1_params = {
-            'n_south_asian': 237,          # Line 99: confirmed sample size
-            'n_others': 50000,             # Large comparison group assumption
-            'design_effect': 1.5,          # Line 122: typical for CHIS
-            'alpha': 0.1,                  # Line 103: specified by PI
-            'target_or': 1.15,             # Line 102: "possibly OR=1.15"
-            'ipv_p_south_asian': 0.10,     # Line 109: "estimated at 10%"
-            'ipv_p_others': 0.06           # Line 101: "IPV 6% baseline"
-        }
+        self.aim1_params = config.aim1_params.copy()
         
         # Aim 3: Dyadic APIM Analysis
         # Parameters from consultation notes lines 219-346
-        self.aim3_params = {
-            'n_couples': 200,              # Line 219: confirmed sample size
-            'n_individuals': 400,
-            'alpha': 0.1,                  # Line 103: specified by PI
-            'baseline_ipv_rate': 0.20,     # Line 346: "more realistic than 10%"
-            'icc_partners': 0.3,           # Line 236: "default ~0.3"
-            'actor_effect_OR': 1.6,        # Conservative actor effect
-            'partner_effect_OR': 1.4,      # Smaller partner effect (typical)
-        }
+        self.aim3_params = config.aim3_params.copy()
     
     def two_sample_proportion_power(self, n1, n2, p1, p2, alpha=0.05, design_effect=1.0):
         """Calculate power for two-sample proportion test with design effects"""
@@ -444,8 +430,8 @@ class K01PowerAnalysis:
         ax3.plot(or_range, dyadic_actor_01, 'purple', linewidth=3, label='Actor Effect')
         ax3.plot(or_range, dyadic_partner_01, 'orange', linewidth=3, label='Partner Effect')
         ax3.axhline(y=0.8, color='gray', linestyle='--', alpha=0.7, label='80% Power')
-        ax3.axvline(x=1.6, color='purple', linestyle=':', alpha=0.7, label='Actor OR=1.6')
-        ax3.axvline(x=1.4, color='orange', linestyle=':', alpha=0.7, label='Partner OR=1.4')
+        ax3.axvline(x=1.4, color='purple', linestyle=':', alpha=0.7, label='Actor OR=1.4')
+        ax3.axvline(x=1.6, color='orange', linestyle=':', alpha=0.7, label='Partner OR=1.6')
         ax3.set_xlabel('Odds Ratio')
         ax3.set_ylabel('Power')
         ax3.set_title('Aim 3: Power vs Odds Ratio\n(200 couples, α=0.1)')
@@ -483,6 +469,17 @@ class K01PowerAnalysis:
         
         plt.tight_layout()
         plt.savefig('k01_comprehensive_power_analysis.png', dpi=300, bbox_inches='tight')
+        
+        # Export result tables to CSV
+        df_aim1_or = pd.DataFrame({'OR': or_range, 'power_alpha_0.1': powers_01, 'power_alpha_0.05': powers_05})
+        df_aim1_or.to_csv('aim1_power_vs_or.csv', index=False)
+        df_aim1_n = pd.DataFrame({'n': n_range, 'power': ipv_powers})
+        df_aim1_n.to_csv('aim1_power_vs_n.csv', index=False)
+        df_aim3_or = pd.DataFrame({'OR': or_range, 'actor_power': dyadic_actor_01, 'partner_power': dyadic_partner_01})
+        df_aim3_or.to_csv('aim3_power_vs_or.csv', index=False)
+        df_aim3_n = pd.DataFrame({'n_couples': couples_range, 'actor_power': actor_powers, 'partner_power': partner_powers})
+        df_aim3_n.to_csv('aim3_power_vs_n.csv', index=False)
+        
         plt.show()
         
         return or_range, powers_01, powers_05
@@ -562,6 +559,30 @@ class K01PowerAnalysis:
         print("disparities in sexual and reproductive health outcomes between South Asian")
         print("and other populations, supporting the feasibility of this K01 research plan.")
 
+    def validate_with_apimpowerr(self):
+        """Validate dyadic APIM power using R's APIMPowerR package via rpy2"""
+        try:
+            from rpy2.robjects import r
+            from rpy2.robjects.packages import importr
+            import math
+            apim_pkg = importr('APIMPowerR')
+            r('library(APIMPowerR)')
+            n = self.aim3_params['n_couples']
+            icc = self.aim3_params['icc_partners']
+            actorOR = self.aim3_params['actor_effect_OR']
+            partnerOR = self.aim3_params['partner_effect_OR']
+            alpha = self.aim3_params['alpha']
+            r_code = f"powerAPIM(n={n}, ICC={icc}, adirect=log({actorOR}), apartner=log({partnerOR}), alpha={alpha})"
+            res = r(r_code)
+            actor_power_r = float(res[0])
+            partner_power_r = float(res[1])
+            print(f"R APIMPowerR actor effect power: {actor_power_r:.3f}")
+            print(f"R APIMPowerR partner effect power: {partner_power_r:.3f}")
+            return {'actor_power_r': actor_power_r, 'partner_power_r': partner_power_r}
+        except Exception as e:
+            print("R integration error:", e)
+            return None
+
 def main():
     """Run comprehensive power analysis addressing all consultation questions"""
     
@@ -586,6 +607,10 @@ def main():
     
     # Generate grant-ready summary
     analysis.write_grant_ready_summary(aim1_results, target_or_results, aim3_results)
+    # Validate with R's APIMPowerR
+    print("Validating dyadic APIM power with R's APIMPowerR...")
+    validation = analysis.validate_with_apimpowerr()
+    print("R validation results:", validation)
     
     return {
         'aim1_results': aim1_results,
